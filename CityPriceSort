@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct cityStruct  {
+    char* city; // pointer
+    int price;
+} cityStruct;
+
+void swap(int *xtemp, int *ytemp) {
+    int temp = *xtemp;
+    *xtemp = *ytemp;
+    *ytemp = temp;
+}
+
+void nameSwap(char *xtemp, char *ytemp) {
+    char *temp = (char *)malloc((strlen(xtemp) + 1) * sizeof(char));
+    strcpy(temp, xtemp);
+    strcpy(xtemp, ytemp);
+    strcpy(ytemp, temp);
+    free(temp);
+}
+
+void highestPrice(cityStruct array[], int size) {
+    int i, j, max_idx;
+
+    for (i = 0; i < size - 1; i++) {
+        max_idx = i;
+        for (j = i+1; j < size; j++)
+            if (array[j].price > array[max_idx].price)
+                max_idx = j;
+    }
+
+    printf("The city with the highest house price: %s\n", array[max_idx].city);
+}
+
+void sortSelection(cityStruct array[], int size) {
+    int i, j, min_idx;
+
+    for (i = 0; i < size-1; i++){
+        min_idx = i;
+        for (j = i+1; j < size; j++)
+            if (array[j].price < array[min_idx].price)
+                min_idx = j;
+        
+        swap(&array[min_idx].price, &array[i].price);
+        nameSwap(array[min_idx].city, array[i].city);
+    }
+}
+
+
+
+int main() {
+    char ans = 'y';
+    int numberOfCity = 1;
+    cityStruct* cities;
+
+    
+    cities = (cityStruct*)malloc(numberOfCity * sizeof(cityStruct));
+
+    while (ans == 'y') {
+
+        printf("Enter the name of the city: ");
+        scanf("%ms", &(cities + numberOfCity - 1) -> city);
+        
+
+        printf("Enter the average house price: ");
+        scanf("%d", &(cities + numberOfCity - 1)->price);
+
+        printf("Enter another city? (y/n) : ");
+        scanf(" %c", &ans);
+
+
+        printf("%s %d\n", cities->city, cities->price);
+        
+        if (ans == 'y')
+        {
+            ++numberOfCity;
+            cities = (cityStruct*)realloc(cities, numberOfCity * sizeof(cityStruct));
+
+        }
+
+
+
+    }
+
+    printf("List of city and prices: \n");
+    for (int each = 0; each < (numberOfCity); each++) {
+        printf("City: %s\t Price:%d\n", (cities + each)->city, (cities + each)->price);
+    }
+
+    printf("Sorted: \n");
+    sortSelection(cities, numberOfCity);
+    for (int each = 0; each < (numberOfCity); each++) {
+        printf("City: %s\t Price:%d\n", (cities + each)->city, (cities + each)->price);
+    }
+    highestPrice(cities, numberOfCity);
+
+
+    free(cities);
+    return 0;
+}
